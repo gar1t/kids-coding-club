@@ -81,7 +81,7 @@ def write_var_prompt(var_name):
     sys.stdout.flush()
 
 def write_answer(answer, x, y):
-    sys.stdout.write('\n----> {} + {} = {}\n\n'.format(x, y, answer))
+    sys.stdout.write('\n  {} + {} = {}\n\n'.format(x, y, answer))
 
 if __name__ == '__main__':
     main()

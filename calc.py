@@ -35,7 +35,7 @@ def write_operation_prompt():
 
 def input_to_operation(s):
     op = s.strip()
-    valid = ('a', 's', 'm', 'd', 'q')
+    valid = [name[0] for name, _, _ in operations] + ['q']
     if op not in valid:
         raise ValueError('invalid operation - must be in {}'.format(valid))
     return op

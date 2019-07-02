@@ -1,4 +1,12 @@
+import operator
 import sys
+
+operations = [
+    ('add', '+', operator.add),
+    ('subtract', '-', operator.sub),
+    ('multiply', '*', operator.mul),
+    ('divide', '/', operator.div),
+]
 
 def main():
     while True:
@@ -13,43 +21,14 @@ def calculate():
         raise StopIteration()
     dispatch_operation(operation)
 
-def dispatch_operation(op):
-    if op == 'a':
-        add()
-    elif op == 's':
-        subtract()
-    elif op == 'm':
-        multiply()
-    elif op == 'd':
-        divide()
-    else:
-        assert False, op
-
-def add():
-    x = read_var('x')
-    y = read_var('y')
-    answer = x + y
-    write_answer(answer, x, y)
-
-def subtract():
-    pass
-
-def multiply():
-    pass
-
-def divide():
-    pass
-
 def read_operation():
     write_operation_prompt()
     return input_to_operation(read_input())
 
 def write_operation_prompt():
     sys.stdout.write('What would you like to do?\n')
-    sys.stdout.write(' [a]dd\n')
-    sys.stdout.write(' [s]ubtract\n')
-    sys.stdout.write(' [m]ultiply\n')
-    sys.stdout.write(' [d]ivide\n')
+    for name, _, _ in operations:
+        sys.stdout.write(' [{}]{}\n'.format(name[0], name[1:]))
     sys.stdout.write(' [q]uit\n')
     sys.stdout.write('> ')
     sys.stdout.flush()
@@ -60,6 +39,20 @@ def input_to_operation(s):
     if op not in valid:
         raise ValueError('invalid operation - must be in {}'.format(valid))
     return op
+
+def dispatch_operation(op):
+    for name, symbol, f in operations:
+        if name[0] == op:
+            apply_operation(f, symbol)
+            break
+    else:
+        assert False, op
+
+def apply_operation(f, symbol):
+    x = read_var('x')
+    y = read_var('y')
+    answer = f(x, y)
+    write_answer(answer, x, y, symbol)
 
 def read_var(var_name):
     write_var_prompt(var_name)
@@ -80,8 +73,9 @@ def write_var_prompt(var_name):
     sys.stdout.write('> ')
     sys.stdout.flush()
 
-def write_answer(answer, x, y):
-    sys.stdout.write('\n  {} + {} = {}\n\n'.format(x, y, answer))
+def write_answer(answer, x, y, symbol):
+    fmt = '\n  {} {} {} = {}\n\n'
+    sys.stdout.write(fmt.format(x, symbol, y, answer))
 
 if __name__ == '__main__':
     main()
